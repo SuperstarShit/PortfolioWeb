@@ -74,6 +74,7 @@
 //     </main>
 //   );
 // }
+"use client";
 
 import React, { useState } from 'react';
 import { ChevronLeft, Calendar, Tag } from 'lucide-react';

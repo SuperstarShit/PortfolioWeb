@@ -1,4 +1,6 @@
 // app/blog/the-nature-of-time/page.tsx
+
+
 import React from "react";
 import Link from "next/link";
 import { BLOGS } from "../../../data/blogs";
