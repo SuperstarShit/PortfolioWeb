@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import Link from 'next/link';
 
-// --- Sample data (replace with your real projects/blogs/resume entries) ---
+
 const PROJECTS = [
   {
     id: 'p1',
@@ -90,14 +90,46 @@ const TIMELINE = [
 // --- Utility: build graph nodes and links ---
 // --- Utility: build graph nodes and links ---
 // Robust: collect skill set from both the SKILLS array and project.skills
-function buildGraph(projects: any, skills: any) 
+// function buildGraph(projects: any, skills: any) 
+// {
+//   const nodes: any[] = [];
+//   const links: any[] = [];
+
+
+//   // add project nodes
+//   projects.forEach(p => nodes.push({ id: p.id, type: 'project', label: p.title, meta: p }));
+
+//   // build a set of skill names from supplied skills array + all project skills
+//   const skillSet = new Set();
+//   (skills || []).forEach(s => skillSet.add(s));
+//   projects.forEach(p => {
+//     if (Array.isArray(p.skills)) {
+//       p.skills.forEach(s => skillSet.add(s));
+//     }
+//   });
+
+//   // add skill nodes from the union set
+//   Array.from(skillSet).forEach(s => nodes.push({ id: `skill:${s}`, type: 'skill', label: s }));
+
+//   // links (only create links for skills that exist in nodes)
+//   projects.forEach(p => {
+//     (p.skills || []).forEach(s => {
+//       links.push({ source: p.id, target: `skill:${s}` });
+//     });
+//   });
+
+//   return { nodes, links };
+// }
+
+function buildGraph(projects: typeof PROJECTS, skills: typeof SKILLS) 
 {
   const nodes: any[] = [];
   const links: any[] = [];
 
-
   // add project nodes
-  projects.forEach(p => nodes.push({ id: p.id, type: 'project', label: p.title, meta: p }));
+  projects.forEach(p =>
+    nodes.push({ id: p.id, type: 'project', label: p.title, meta: p })
+  );
 
   // build a set of skill names from supplied skills array + all project skills
   const skillSet = new Set();
@@ -109,9 +141,11 @@ function buildGraph(projects: any, skills: any)
   });
 
   // add skill nodes from the union set
-  Array.from(skillSet).forEach(s => nodes.push({ id: `skill:${s}`, type: 'skill', label: s }));
+  Array.from(skillSet).forEach(s =>
+    nodes.push({ id: `skill:${s}`, type: 'skill', label: s })
+  );
 
-  // links (only create links for skills that exist in nodes)
+  // links
   projects.forEach(p => {
     (p.skills || []).forEach(s => {
       links.push({ source: p.id, target: `skill:${s}` });
@@ -121,18 +155,24 @@ function buildGraph(projects: any, skills: any)
   return { nodes, links };
 }
 
-
 export default function PortfolioApp() {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
-  const [highlightSkill, setHighlightSkill] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [highlightSkill, setHighlightSkill] = useState<string | null>(null);
+
+  const [selectedProject, setSelectedProject] =
+  useState<(typeof PROJECTS)[number] | null>(null);
+
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formMessage, setFormMessage] = useState('');
   const svgRefDesktop = useRef(null);
   const svgRefMobile = useRef(null);
-const simulationRef = useRef(null);
+const simulationRef = useRef<{
+  desktop?: { stop?: () => void };
+  mobile?: { stop?: () => void };
+} | null>(null);
+
 
   const data = useMemo(() => buildGraph(PROJECTS, SKILLS), []);
 
@@ -140,7 +180,12 @@ const simulationRef = useRef(null);
   // render / simulation effect (handles both desktop & mobile svgs, and window resize)
 useEffect(() => {
   // helper to render a graph into a given svg element
-  function renderInto(svgEl, isMobile, namespace) {
+  function renderInto(
+  svgEl: SVGSVGElement | null,
+  isMobile: boolean,
+  namespace: string
+) 
+ {
     if (!svgEl) return null;
 
     const width = svgEl.parentElement?.clientWidth || 900;
@@ -167,8 +212,16 @@ useEffect(() => {
 
     // create simulation
     const simulation = d3.forceSimulation(data.nodes.map(d => Object.assign({}, d))) // clone nodes so multiple sims may not conflict
-      .force('link', d3.forceLink(data.links).id(d => d.id).distance(linkDistance).strength(linkStrength))
-      .force('charge', d3.forceManyBody().strength(chargeStrength))
+     .force(
+  'link',
+  d3
+    .forceLink(data.links)
+    .id((d: any) => d.id)
+    .distance(linkDistance)
+    .strength(linkStrength)
+)
+
+       .force('charge', d3.forceManyBody().strength(chargeStrength))
       .force('center', d3.forceCenter(width / 2, height / 2));
 
     // create link & node DOM
@@ -180,18 +233,26 @@ useEffect(() => {
     const node = nodeGroup.selectAll('g')
       .data(simulation.nodes())
       .join('g')
-      .call(d3.drag()
-        .on('start', (event, d) => {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x; d.fy = d.y;
-        })
-        .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
-        .on('end', (event, d) => {
-          if (!event.active) simulation.alphaTarget(0);
-          // keep nodes pinned if user dragged intentionally? we release to allow settling
-          d.fx = null; d.fy = null;
-        })
-      );
+      .call(
+  (d3.drag<SVGGElement, any>()
+    .on('start', (event, d: any) => {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    })
+    .on('drag', (event, d: any) => {
+      d.fx = event.x;
+      d.fy = event.y;
+    })
+    .on('end', (event, d: any) => {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    })
+  ) as any
+);
+
+
 
     node.append('circle')
       .attr('r', d => d.type === 'project' ? (isMobile ? 6 : 10) : (isMobile ? 5 : 7))
@@ -671,15 +732,4 @@ function SimpleSorter() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
 
