@@ -10,21 +10,30 @@ const PROJECTS = [
     title: 'Contest Website',
     tags: ['JavaScript' , 'HTML' , 'CSS'],
     skills: ['React', 'Node'],
-    desc: 'Fetches live contest data from Codeforces and displays ongoing/upcoming contests with filters and countdowns.'
+    desc: 'Fetches live contest data from Codeforces and displays ongoing/upcoming contests with filters and countdowns.',
+    liveUrl: "https://superstarshit.github.io/contestweb/",
+    codeUrl: "https://github.com/SuperstarShit/contestweb",
+
   },
   {
     id: 'p2',
     title: 'CRUD Note-taking App',
     tags: ['Web' , 'HTML' , 'CSS'],
     skills: ['JavaScript'],
-    desc: 'Simple note app storing notes in browser localStorage — create, edit, delete, and search notes.'
+    desc: 'Simple note app storing notes in browser localStorage — create, edit, delete, and search notes.',
+    liveUrl: "https://superstarshit.github.io/CrudNotetaking/",
+    codeUrl: "https://github.com/SuperstarShit/CrudNotetaking",
+
   },
   {
     id: 'p3',
     title: 'Prediction Game',
     tags: ['Web', 'Game'],
     skills: ['JavaScript', 'Probability Theory'],
-    desc: 'A browser game where the computer learns how you play. Using simple probability theory, it predicts your next number and adjusts its strategy every ball, a lightweight take on how AI models ‘learn’ from human behavior.'
+    desc: 'A browser game where the computer learns how you play. Using simple probability theory, it predicts your next number and adjusts its strategy every ball, a lightweight take on how AI models ‘learn’ from human behavior.',
+    liveUrl: "https://superstarshit.github.io/predictionGame/",
+    codeUrl: "https://github.com/SuperstarShit/predictionGame",
+
   },
   // keep your previous placeholder projects too, if you like
   { id: 'p4', title: 'Dimensional Arithmetic Thesis', tags: ['Research', 'Math'], skills: ['Math', 'Proofs', 'D3'], desc: 'A unified view of number, structure, and space.' },
@@ -355,7 +364,7 @@ useEffect(() => {
   {/* Content column */}
   <div className="relative z-10">
     <h2 className="text-3xl md:text-4xl font-bold leading-tight">Ali Abbas — Mathematics & CS</h2>
-    <p className="mt-4 text-gray-700">I build software and prototypes that connect formal mathematics with physical design — from algorithms and visualizers to experimental hardware systems.</p>
+    <p className="mt-4 text-gray-700">I like to learn about software and prototypes that connect formal mathematics with physical design, from algorithms and visualizers to basic experimental hardware systems.</p>
 
     <div className="mt-6 flex gap-3">
       <a href="#projects" className="px-4 py-2 rounded-lg bg-teal-500 text-white">See Projects</a>
@@ -363,7 +372,7 @@ useEffect(() => {
     </div>
 
     <div className="mt-6 text-sm text-gray-500">
-      <strong>Stack:</strong> Next.js, React, Tailwind CSS, C++
+      {/* <strong>Stack:</strong> Next.js, React, Tailwind CSS, C++ */}
     </div>
   </div>
 
@@ -434,7 +443,7 @@ useEffect(() => {
             <h4 className="text-sm font-semibold">Stats</h4>
             <ul className="mt-2 text-sm text-gray-600 space-y-1">
               <li>Languages: C++, JavaScript (React/Node)</li>
-              <li>Areas: Algorithms, Embedded Systems and Math</li>
+              <li>Areas of Interest: Algorithms, Embedded Systems and Math</li>
               
             </ul>
           </aside>
@@ -467,8 +476,18 @@ useEffect(() => {
                   {p.skills.map(s => <span key={s} className="text-xs px-2 py-1 bg-white border rounded">{s}</span>)}
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <button onClick={() => setSelectedProject(p)} className="text-sm px-3 py-1 rounded bg-teal-600 text-white hover:bg-teal-700">Preview</button>
-                  <a className="text-sm px-3 py-1 rounded border hover:bg-gray-100" href="#">Code</a>
+                  <button onClick={() => window.open(p.liveUrl, "_blank")}
+ className="text-sm px-3 py-1 rounded bg-teal-600 text-white hover:bg-teal-700">Preview</button>
+                  
+                  <a
+  href={p.codeUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm px-3 py-1 rounded border hover:bg-gray-100"
+>
+  Code
+</a>
+
                 </div>
               </div>
             ))}
@@ -515,7 +534,7 @@ useEffect(() => {
         <section id="contact" className="bg-white p-6 rounded-2xl shadow grid md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-xl font-semibold">Contact</h3>
-            <p className="mt-2 text-sm text-gray-600">Contact form and a dynamic QR code to share vCard or contact link.</p>
+            
 
             <div className="mt-4 space-y-3">
               <input 
@@ -544,24 +563,24 @@ useEffect(() => {
                 >
                   Send
                 </button>
-                <div className="text-sm text-gray-500">Or scan the QR</div>
-                <div className="w-20 h-20 bg-white border rounded flex items-center justify-center text-xs text-gray-400">QR</div>
+                {/* <div className="text-sm text-gray-500">Or scan the QR</div> */}
+                {/* <div className="w-20 h-20 bg-white border rounded flex items-center justify-center text-xs text-gray-400">QR</div> */}
               </div>
             </div>
           </div>
 
           <div className="p-4 bg-gray-50 rounded">
-            <h4 className="font-semibold">Downloads & Links</h4>
+            {/* <h4 className="font-semibold">Downloads & Links</h4>
             <ul className="mt-2 text-sm text-gray-600 space-y-2">
               <li><a href="#" className="text-teal-600 hover:text-teal-700">Download CV (PDF) --- Not abailable right now</a></li>
               <li><a href="#" className="text-teal-600 hover:text-teal-700">GitHub</a></li>
-              <li><a href="#" className="text-teal-600 hover:text-teal-700">Research repo</a></li>
-            </ul>
+              <li><a href="#" className="text-teal-600 hover:text-teal-700">Research repo</a></li> */}
+            {/* </ul> */}
 
             <div className="mt-4">
               <h5 className="text-sm font-medium">Quick contacts</h5>
               <div className="text-xs text-gray-500 mt-2">Email: aliabbas07950@gmail.com</div>
-              <div className="text-xs text-gray-500">Location: India</div>
+              <div className="text-xs text-gray-500">Phone : +91 6393728342</div>
             </div>
           </div>
         </section>
@@ -651,4 +670,11 @@ function SimpleSorter() {
     </div>
   );
 }
+
+
+
+
+
+
+
 
